@@ -1,6 +1,8 @@
 const express = require("express");
 const morgan = require("morgan");
 const path = require("path");
+const http = require("http");
+const { Server } = require("socket.io");
 
 const app = express();
 
@@ -11,4 +13,18 @@ app.use(morgan(morganFormat));
 app.use(express.static(path.join(__dirname, "..", "public")));
 
 const port = process.env.PORT || 3000;
-app.listen(port, () => console.log(`Listening on http://127.0.0.1:${port}`));
+const server = http.createServer(app);
+server.listen(port, () => console.log(`Listening on http://localhost:${port}`));
+
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:9000",
+    methods: ["GET", "POST"],
+  },
+});
+
+io.on("connection", (socket) => {
+  socket.on("ping", (data) => {
+    socket.emit("pong", data);
+  });
+});
