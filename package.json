@@ -1,0 +1,20 @@
+{
+  "name": "pong-game",
+  "version": "1.0.0",
+  "description": "Prosta gra multiplayer",
+  "main": "index.js",
+  "repository": "git@github.com:QQLKAA/PongGame.git",
+  "author": "Bartłomiej Kudzia; Jakub Gondzik",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "build": "webpack --mode=production",
+    "build:dev": "webpack --mode=development",
+    "serve": "webpack serve --mode=development"
+  },
+  "devDependencies": {
+    "webpack": "^5.62.1",
+    "webpack-cli": "^4.9.1",
+    "webpack-dev-server": "^4.4.0"
+  }
+}
