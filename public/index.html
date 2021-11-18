@@ -8,11 +8,24 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <div>
-      <input id="input-data" />
-      <button id="btn-ping">Ping</button>
-    </div>
-    <ol id="messages"></ol>
+    <main>
+      <section class="view" id="view-loading">
+        <p>Łączenie z serwerem...</p>
+      </section>
+      <section class="view hidden" id="view-login">
+        <form>
+          <h2>Logowanie</h2>
+          <input id="nickname" placeholder="Nickname">
+          <button type="button" id="btn-login">Zaloguj</button>
+        </form>
+      </section>
+      <section class="view hidden" id="view-playerlist">
+        <h2>Aktualnie zalogowani gracze</h2>
+        <ul id="playerlist">
+          <li>Nick1</li>
+        </ul>
+      </section>
+    </main>
     <script src="bundle.js"></script>
   </body>
 </html>

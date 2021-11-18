@@ -28,7 +28,9 @@ const io = new Server(server, {
 });
 
 io.on("connection", (socket) => {
-  socket.on("ping", (data) => {
-    socket.emit("pong", data);
+  socket.on("login", nickname => {
+    socket.emit("show_player_list", [nickname]);
   });
+
+  setTimeout(() => socket.emit("request_login"), 500);
 });

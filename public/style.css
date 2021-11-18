@@ -4,4 +4,14 @@
 
 body {
   font-size: 18px;
+  margin: 0;
+}
+
+.view {
+  max-width: 650px;
+  margin: 2em auto;
+}
+
+.hidden {
+  display: none;
 }
