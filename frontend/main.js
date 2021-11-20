@@ -1,4 +1,5 @@
 import io from "socket.io-client";
+import $ from "jquery";
 
 // Todo: Usunąć ścieżkę w środowisku produkcyjnym
 const socket = io("http://localhost:3000");

@@ -16,6 +16,7 @@
     "start": "cross-env NODE_ENV=production node backend/server.js"
   },
   "devDependencies": {
+    "jquery": "^3.6.0",
     "nodemon": "^2.0.14",
     "socket.io-client": "^4.3.2",
     "webpack": "^5.62.1",
