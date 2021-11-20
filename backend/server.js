@@ -27,9 +27,28 @@ const io = new Server(server, {
   },
 });
 
+function getPlayerList() {
+  const sockets = io.of("/").sockets;
+  const playerList = [];
+  sockets.forEach((socket) => {
+    if (socket.nickname) {
+      playerList.push(socket.nickname);
+    }
+  });
+  return playerList;
+}
+
 io.on("connection", (socket) => {
-  socket.on("login", nickname => {
-    socket.emit("show_player_list", [nickname]);
+  socket.on("login", (nickname) => {
+    socket.nickname = nickname;
+    const playerList = getPlayerList();
+    socket.emit("show_player_list", playerList);
+    io.emit("update_player_list", playerList);
+  });
+
+  socket.on("disconnect", () => {
+    const playerList = getPlayerList();
+    io.emit("update_player_list", playerList);
   });
 
   setTimeout(() => socket.emit("request_login"), 500);
