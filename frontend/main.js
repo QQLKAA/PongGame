@@ -4,30 +4,21 @@ import $ from "jquery";
 // Todo: Usunąć ścieżkę w środowisku produkcyjnym
 const socket = io("http://localhost:3000");
 
-const allViewIds = ["view-loading", "view-login", "view-playerlist"];
-
-function addClass(el, className) {
-  const classList = el.className.split(" ");
-  if (classList.indexOf(className) === -1) {
-    el.className = classList.concat(className).join(" ");
-  }
-}
-
-function removeClass(el, className) {
-  el.className = el.className
-    .split(" ")
-    .filter((name) => name !== className)
-    .join(" ");
-}
-
 function showView(id) {
-  allViewIds.forEach((id) => {
-    addClass(document.getElementById(id), "hidden");
-  });
-  removeClass(document.getElementById(id), "hidden");
+  $(".view").addClass("hidden");
+  $(`#${id}`).removeClass("hidden");
 }
 
-const btnLogin = document.getElementById("btn-login");
+function updatePlayerList(players) {
+  const playerList = $("#playerlist");
+  playerList.empty();
+
+  players.forEach((nickname) => {
+    const playerListItem = $("<li>");
+    playerListItem.text(nickname);
+    playerList.append(playerListItem);
+  });
+}
 
 socket.on("request_login", () => {
   showView("view-login");
@@ -35,25 +26,15 @@ socket.on("request_login", () => {
 
 socket.on("show_player_list", (players) => {
   showView("view-playerlist");
-  document.getElementById("playerlist").innerHTML = "";
-  players.forEach((nickname) => {
-    const li = document.createElement("li");
-    li.innerText = nickname;
-    document.getElementById("playerlist").appendChild(li);
-  });
+  updatePlayerList(players);
 });
 
 socket.on("update_player_list", (players) => {
-  document.getElementById("playerlist").innerHTML = "";
-  players.forEach((nickname) => {
-    const li = document.createElement("li");
-    li.innerText = nickname;
-    document.getElementById("playerlist").appendChild(li);
-  });
+  updatePlayerList(players);
 });
 
-btnLogin.addEventListener("click", () => {
-  const nickname = document.getElementById("nickname").value;
+$("#btn-login").on("click", () => {
+  const nickname = $("#nickname").val();
   if (nickname.length > 0) {
     socket.emit("login", nickname);
   }
