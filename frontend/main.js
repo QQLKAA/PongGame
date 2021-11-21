@@ -36,6 +36,11 @@ function updatePlayerList(players) {
 
 socket.on("request_login", () => {
   showView("view-login");
+  $("#login-error").empty();
+});
+
+socket.on("show_login_error", (message) => {
+  $("#login-error").text(message);
 });
 
 socket.on("show_player_list", (players) => {
@@ -69,7 +74,8 @@ socket.on("update_challenge_list", (data) => {
   });
 });
 
-$("#btn-login").on("click", () => {
+$("#login-form").on("click", (e) => {
+  e.preventDefault();
   const nickname = $("#nickname").val();
   if (nickname.length > 0) {
     socket.emit("login", nickname);

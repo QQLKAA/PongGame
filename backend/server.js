@@ -58,16 +58,23 @@ class Challenge {
 
 io.on("connection", (socket) => {
   socket.on("login", (nickname) => {
-    socket.nickname = nickname;
-    socket.sentChallenges = [];
-    socket.receivedChallenges = [];
-    const playerList = getPlayerList();
-    socket.emit("show_player_list", playerList);
-    io.emit("update_player_list", playerList);
-    socket.emit("update_challenge_list", {
-      sent: socket.sentChallenges,
-      received: socket.receivedChallenges,
-    });
+    if (getPlayer(nickname) === null) {
+      socket.nickname = nickname;
+      socket.sentChallenges = [];
+      socket.receivedChallenges = [];
+      const playerList = getPlayerList();
+      socket.emit("show_player_list", playerList);
+      io.emit("update_player_list", playerList);
+      socket.emit("update_challenge_list", {
+        sent: socket.sentChallenges,
+        received: socket.receivedChallenges,
+      });
+    } else {
+      socket.emit(
+        "show_login_error",
+        `Użytkownik o nicku ${nickname} jest już zalogowany`
+      );
+    }
   });
 
   socket.on("challenge", (challengedNickname) => {
