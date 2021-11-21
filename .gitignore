@@ -105,3 +105,4 @@ dist
 
 # Built webpack bundle
 public/bundle.js
+public/bundle.js.LICENSE.txt
