@@ -74,7 +74,7 @@ socket.on("update_challenge_list", (data) => {
   });
 });
 
-$("#login-form").on("click", (e) => {
+$("#login-form").on("submit", (e) => {
   e.preventDefault();
   const nickname = $("#nickname").val();
   if (nickname.length > 0) {
