@@ -38,12 +38,68 @@ function getPlayerList() {
   return playerList;
 }
 
+function getPlayer(nickname) {
+  const sockets = io.of("/").sockets;
+  let result = null;
+  sockets.forEach((socket) => {
+    if (socket.nickname === nickname) {
+      result = socket;
+    }
+  });
+  return result;
+}
+
+class Challenge {
+  constructor(sourcePlayer, targetPlayer) {
+    this.sourcePlayer = sourcePlayer;
+    this.targetPlayer = targetPlayer;
+  }
+}
+
 io.on("connection", (socket) => {
   socket.on("login", (nickname) => {
     socket.nickname = nickname;
+    socket.sentChallenges = [];
+    socket.receivedChallenges = [];
     const playerList = getPlayerList();
     socket.emit("show_player_list", playerList);
     io.emit("update_player_list", playerList);
+    socket.emit("update_challenge_list", {
+      sent: socket.sentChallenges,
+      received: socket.receivedChallenges,
+    });
+  });
+
+  socket.on("challenge", (challengedNickname) => {
+    let challengedPlayer = getPlayer(challengedNickname);
+    if (challengedPlayer) {
+      // Sprawdź, czy wyzwynie zostało już rzucone
+      const equalChallenges = challengedPlayer.receivedChallenges.filter(
+        (challenge) => challenge.sourcePlayer === socket.nickname
+      );
+      if (equalChallenges.length > 0) {
+        // TODO: Może jakaś wiadomość z błędem?
+        return;
+      }
+
+      // Utwórz wyzwanie i zapisz je w uchwytach graczy
+      const challenge = new Challenge(
+        socket.nickname,
+        challengedPlayer.nickname
+      );
+      socket.sentChallenges.push(challenge);
+      challengedPlayer.receivedChallenges.push(challenge);
+
+      // Zaktualizuj listę wyzwań
+      socket.emit("update_challenge_list", {
+        sent: socket.sentChallenges,
+        received: socket.receivedChallenges,
+      });
+      challengedPlayer.emit("update_challenge_list", {
+        sent: challengedPlayer.sentChallenges,
+        received: challengedPlayer.receivedChallenges,
+      });
+    }
   });
 
   socket.on("disconnect", () => {
